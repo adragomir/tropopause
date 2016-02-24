@@ -19,7 +19,7 @@ import awacs.elasticloadbalancing
 import awacs.iam
 
 from troposphere import Template as TropoTemplate
-from troposphere import FindInMap, Output, AWSObject, Ref, GetAtt, Parameter, Base64, Join, awsencode
+from troposphere import FindInMap, Output, Condition, AWSObject, Ref, GetAtt, Parameter, Base64, Join, awsencode
 import troposphere.ec2 as ec2
 import troposphere.iam as iam
 import troposphere.elasticloadbalancing as elb
