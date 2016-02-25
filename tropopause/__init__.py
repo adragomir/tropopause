@@ -9,8 +9,16 @@ from troposphere import FindInMap, Output, Condition, AWSObject, Ref, GetAtt, Pa
 from troposphere import Template as TropoTemplate
 
 DNS_SUFFIXES = {
-    'eu-west-1': 'eu-west-1.compute.internal',
     'us-east-1': 'ec2.internal',
+    'us-west-1': 'us-west-1.compute.internal',
+    'us-west-2': 'us-west-2.compute.internal',
+    'eu-west-1': 'eu-west-1.compute.internal',
+    'eu-central-1': 'eu-central-1.compute.internal',
+    'ap-northeast-1': 'ap-northeast-1.compute.internal',
+    'ap-northeast-2': 'ap-northeast-2.compute.internal',
+    'ap-southeast-1': 'ap-southeast-1.compute.internal',
+    'ap-southeast-2': 'ap-southeast-2.compute.internal',
+    'sa-east-1': 'sa-east-1.compute.internal',
 }
 
 DISKS_PER_INSTANCE_TYPE = {
