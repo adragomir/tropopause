@@ -1,28 +1,12 @@
-from collections import OrderedDict
+import json
 import os
 import re
 import string
-import json
+from collections import OrderedDict
 
-import awacs
-import awacs.ec2
-import awacs.aws
-import awacs.sts
-import awacs.s3
-import awacs.sqs
-import awacs.autoscaling
-import awacs.cloudformation
-import awacs.cloudfront
-import awacs.cloudwatch
-import awacs.dynamodb
-import awacs.elasticloadbalancing
-import awacs.iam
-
-from troposphere import Template as TropoTemplate
-from troposphere import FindInMap, Output, Condition, AWSObject, Ref, GetAtt, Parameter, Base64, Join, awsencode
 import troposphere.ec2 as ec2
-import troposphere.iam as iam
-import troposphere.elasticloadbalancing as elb
+from troposphere import FindInMap, Output, Condition, AWSObject, Ref, GetAtt, Parameter, Base64, Join, awsencode
+from troposphere import Template as TropoTemplate
 
 DNS_SUFFIXES = {
     'eu-west-1': 'eu-west-1.compute.internal',
