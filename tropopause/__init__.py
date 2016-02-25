@@ -77,6 +77,7 @@ DISKS_PER_INSTANCE_TYPE = {
     't1.micro': 0,
 }
 
+
 class Template(TropoTemplate):
     def __init__(self):
         TropoTemplate.__init__(self)
@@ -147,21 +148,24 @@ class Template(TropoTemplate):
         t['Resources'] = self.resources
         return json.dumps(t, cls=awsencode, indent=indent, separators=separators)
 
+
 class T(string.Template):
     delimiter = '%'
     idpattern = r'[a-z][_a-z0-9]*'
+
 
 def readify(f):
     out = ""
     if hasattr(f, 'read'):
         out = f.read()
     else:
-        if not('\n' in f) and os.path.exists(f):
+        if not ('\n' in f) and os.path.exists(f):
             with open(f, 'r') as fd:
                 out = fd.read()
         else:
             out = f
     return out
+
 
 def network_acls(name, inp):
     acl_spec = readify(inp)
@@ -189,6 +193,7 @@ def network_acls(name, inp):
             acl_props['Icmp'] = ec2.ICMP(Code=int(icmp[0]), Type=int(icmp[1]))
         acl_entries.append(ec2.NetworkAclEntry('%s%sEntry' % (pieces[0], name), **acl_props))
     return acl_entries
+
 
 def vpc_security_rules(inp):
     sg_spec = readify(inp)
@@ -224,6 +229,7 @@ def vpc_security_rules(inp):
                 kwargs["DestinationSecurityGroupId"] = Ref(pieces[1])
     return out
 
+
 def security_group_rules(inp):
     ingress = []
     egress = []
@@ -253,13 +259,16 @@ def security_group_rules(inp):
             egress.append(sgr)
     return (ingress, egress)
 
+
 def substitute_file(path, substitutions={}):
     return substitute(path, substitutions)
+
 
 def substitute(inp, substitutions={}):
     inp = readify(inp)
     out = T(inp).substitute(**substitutions)
     return out
+
 
 def security_group(name, inp, vpc, substitutions={}, description=""):
     inp = readify(inp)
@@ -269,14 +278,15 @@ def security_group(name, inp, vpc, substitutions={}, description=""):
         description = name
 
     return ec2.SecurityGroup(
-        name,
-        GroupDescription=description,
-        SecurityGroupEgress=egress,
-        SecurityGroupIngress=ingress,
-        VpcId=Ref(vpc)
+            name,
+            GroupDescription=description,
+            SecurityGroupEgress=egress,
+            SecurityGroupIngress=ingress,
+            VpcId=Ref(vpc)
     )
 
-def name_zone(start, i = None, az_i = None):
+
+def name_zone(start, i=None, az_i=None):
     id_piece = ""
     az_piece = ""
     if i is not None:
@@ -285,23 +295,29 @@ def name_zone(start, i = None, az_i = None):
         az_piece = "AZ%d" % az_i
     return "%s%s%s" % (start, id_piece, az_piece)
 
-def net_name(prefix, what, i = None, az_i = None):
+
+def net_name(prefix, what, i=None, az_i=None):
     return name_zone(prefix + what, i, az_i)
 
-def subnet_name(prefix, i = None, az_i = None):
+
+def subnet_name(prefix, i=None, az_i=None):
     return net_name(prefix, "Subnet", i, az_i)
 
-def route_table_name(prefix, i = None, az_i = None):
+
+def route_table_name(prefix, i=None, az_i=None):
     return net_name(prefix, "RouteTable", i, az_i)
 
-def route_name(prefix, i = None, az_i = None):
+
+def route_name(prefix, i=None, az_i=None):
     return net_name(prefix, "Route", i, az_i)
+
 
 def split_content(s, fixrefs=True):
     pattern = r'(Ref\([a-zA-Z0-9:]*\)|GetAtt\([a-zA-Z0-9:]*,\s*[a-zA-Z0-9:]*\))'
     lines = [l + "\n" for l in s.split("\n")]
     pieces = [re.split(pattern, l) for l in lines]
     flatten = [i for sl in pieces for i in sl]
+
     def replace_ref(t):
         if re.match(pattern, t):
             if t[0:3] == "Ref":
@@ -315,13 +331,17 @@ def split_content(s, fixrefs=True):
                     raise "ERROR parsing string: " + t
         else:
             return t
+
     return [replace_ref(x) for x in flatten]
+
 
 def make_content(s, fixrefs=True):
     return Join('', split_content(s, fixrefs))
 
+
 def make_user_data(s):
     return Base64(make_content(s))
+
 
 def merge(*dicts):
     result = {}
